@@ -1,6 +1,7 @@
 #include "Screen.h"
 
 #include <stdlib.h>
+#include <cstdio>
 
 #include "FileSystemUtils.h"
 #include "GraphicsUtil.h"

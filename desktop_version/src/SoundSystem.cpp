@@ -6,6 +6,7 @@
 
 MusicTrack::MusicTrack(const char* fileName)
 {
+#if !defined(__PS2__)
 	m_music = Mix_LoadMUS(fileName);
 	m_isValid = true;
 	if(m_music == NULL)
@@ -13,10 +14,12 @@ MusicTrack::MusicTrack(const char* fileName)
 		fprintf(stderr, "Unable to load Ogg Music file: %s\n", Mix_GetError());
 		m_isValid = false;
 	}
+#endif
 }
 
 MusicTrack::MusicTrack(SDL_RWops *rw)
 {
+#if !defined(__PS2__)
 	m_music = Mix_LoadMUS_RW(rw, 0);
 	m_isValid = true;
 	if(m_music == NULL)
@@ -24,10 +27,12 @@ MusicTrack::MusicTrack(SDL_RWops *rw)
 		fprintf(stderr, "Unable to load Magic Binary Music file: %s\n", Mix_GetError());
 		m_isValid = false;
 	}
+#endif
 }
 
 SoundTrack::SoundTrack(const char* fileName)
 {
+#if !defined(__PS2__)
 	sound = NULL;
 
 	unsigned char *mem;
@@ -44,10 +49,12 @@ SoundTrack::SoundTrack(const char* fileName)
 	{
 		fprintf(stderr, "Unable to load WAV file: %s\n", Mix_GetError());
 	}
+#endif
 }
 
 SoundSystem::SoundSystem()
 {
+#if !defined(__PS2__)
 	int audio_rate = 44100;
 	Uint16 audio_format = AUDIO_S16SYS;
 	int audio_channels = 2;
@@ -58,4 +65,5 @@ SoundSystem::SoundSystem()
 		fprintf(stderr, "Unable to initialize audio: %s\n", Mix_GetError());
 		SDL_assert(0 && "Unable to initialize audio!");
 	}
+#endif
 }

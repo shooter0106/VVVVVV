@@ -79,6 +79,7 @@ static bool compare_nocase (std::string first, std::string second)
 
 void editorclass::loadZips()
 {
+#ifndef __PS2__
     directoryList = FILESYSTEM_getLevelDirFileNames();
     bool needsReload = false;
 
@@ -95,6 +96,7 @@ void editorclass::loadZips()
     }
 
     if (needsReload) directoryList = FILESYSTEM_getLevelDirFileNames();
+#endif
 }
 
 void replace_all(std::string& str, const std::string& from, const std::string& to)

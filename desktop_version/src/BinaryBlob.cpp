@@ -73,6 +73,7 @@ void binaryBlob::writeBinaryBlob(const char* _name)
 
 bool binaryBlob::unPackBinary(const char* name)
 {
+#ifndef __PS2__
 	PHYSFS_sint64 size;
 
 	PHYSFS_File *handle = PHYSFS_openRead(name);
@@ -131,7 +132,7 @@ bool binaryBlob::unPackBinary(const char* name)
 
 		printf("%s unpacked\n", m_headers[i].name);
 	}
-
+#endif
 	return true;
 }
 

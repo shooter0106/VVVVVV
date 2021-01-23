@@ -1,0 +1,39 @@
+EE_BIN = vvvvvv
+EE_OBJS = src/BinaryBlob.cpp \
+	src/BlockV.cpp \
+	src/Ent.cpp \
+	src/Entity.cpp \
+	src/FileSystemUtils.cpp \
+	src/Finalclass.cpp \
+	src/Game.cpp \
+	src/Graphics.cpp \
+	src/GraphicsResources.cpp \
+	src/GraphicsUtil.cpp \
+	src/Input.cpp \
+	src/KeyPoll.cpp \
+	src/Labclass.cpp \
+	src/Logic.cpp \
+	src/Map.cpp \
+	src/Otherlevel.cpp \
+	src/preloader.cpp \
+	src/Render.cpp \
+	src/RenderFixed.cpp \
+	src/Screen.cpp \
+	src/Script.cpp \
+	src/Scripts.cpp \
+	src/Spacestation2.cpp \
+	src/TerminalScripts.cpp \
+	src/Textbox.cpp \
+	src/Tower.cpp \
+	src/UtilityClass.cpp \
+	src/WarpClass.cpp \
+	src/XMLUtils.cpp \
+	src/main.cpp \
+	src/Network.c \
+	src/ThirdPartyDeps.c
+
+EE_CXXFLAGS += -D__PS2__
+EE_INCS += -I/home/shooter/devel/current/ps2/SDL2/include
+
+include $(PS2SDK)/samples/Makefile.pref
+include $(PS2SDK)/samples/Makefile.eeglobal

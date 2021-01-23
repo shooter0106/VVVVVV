@@ -26,6 +26,8 @@
 #include <sys/wait.h>
 #include <spawn.h>
 #define MAX_PATH PATH_MAX
+#elif defined(__PS2__)
+#define MAX_PATH 255
 #endif
 
 static char saveDir[MAX_PATH] = {'\0'};
@@ -37,6 +39,7 @@ static void PLATFORM_copyFile(const char *oldLocation, const char *newLocation);
 
 int FILESYSTEM_init(char *argvZero, char* baseDir, char *assetsPath)
 {
+#ifndef __PS2__
 	char output[MAX_PATH];
 	int mkdirResult;
 	const char* pathSep = PHYSFS_getDirSeparator();
@@ -129,12 +132,15 @@ int FILESYSTEM_init(char *argvZero, char* baseDir, char *assetsPath)
 	{
 		printf("gamecontrollerdb.txt not found!\n");
 	}
+#endif
 	return 1;
 }
 
 void FILESYSTEM_deinit()
 {
+#ifndef __PS2__
 	PHYSFS_deinit();
+#endif
 }
 
 char *FILESYSTEM_getUserSaveDirectory()
@@ -149,11 +155,16 @@ char *FILESYSTEM_getUserLevelDirectory()
 
 bool FILESYSTEM_directoryExists(const char *fname)
 {
+#ifndef __PS2__
 	return PHYSFS_exists(fname);
+#else
+	return false;
+#endif
 }
 
 void FILESYSTEM_mount(const char *fname)
 {
+#ifndef __PS2__
 	std::string path(PHYSFS_getRealDir(fname));
 	path += PHYSFS_getDirSeparator();
 	path += fname;
@@ -165,12 +176,14 @@ void FILESYSTEM_mount(const char *fname)
 	{
 		graphics.assetdir = path.c_str();
 	}
+#endif
 }
 
 bool FILESYSTEM_assetsmounted = false;
 
 void FILESYSTEM_mountassets(const char* path)
 {
+#ifndef __PS2__
 	const std::string _path(path);
 
 	std::string zippath = "levels/" + _path.substr(7,_path.size()-14) + ".data.zip";
@@ -209,10 +222,12 @@ void FILESYSTEM_mountassets(const char* path)
 		printf("Custom asset directory does not exist\n");
 		FILESYSTEM_assetsmounted = false;
 	}
+#endif
 }
 
 void FILESYSTEM_unmountassets()
 {
+#ifndef __PS2__
 	if (graphics.assetdir != "")
 	{
 		printf("Unmounting %s\n", graphics.assetdir.c_str());
@@ -225,6 +240,7 @@ void FILESYSTEM_unmountassets()
 		printf("Cannot unmount when no asset directory is mounted\n");
 	}
 	FILESYSTEM_assetsmounted = false;
+#endif
 }
 
 void FILESYSTEM_freeMemory(unsigned char **mem);
@@ -235,6 +251,7 @@ void FILESYSTEM_loadFileToMemory(
 	size_t *len,
 	bool addnull
 ) {
+#ifndef __PS2__
 	if (SDL_strcmp(name, "levels/special/stdin.vvvvvv") == 0)
 	{
 		// this isn't *technically* necessary when piping directly from a file, but checking for that is annoying
@@ -285,6 +302,7 @@ void FILESYSTEM_loadFileToMemory(
 		FILESYSTEM_freeMemory(mem);
 	}
 	PHYSFS_close(handle);
+#endif
 }
 
 void FILESYSTEM_freeMemory(unsigned char **mem)
@@ -295,6 +313,7 @@ void FILESYSTEM_freeMemory(unsigned char **mem)
 
 bool FILESYSTEM_saveTiXml2Document(const char *name, tinyxml2::XMLDocument& doc)
 {
+#ifndef __PS2__
 	/* XMLDocument.SaveFile doesn't account for Unicode paths, PHYSFS does */
 	tinyxml2::XMLPrinter printer;
 	doc.Print(&printer);
@@ -305,6 +324,7 @@ bool FILESYSTEM_saveTiXml2Document(const char *name, tinyxml2::XMLDocument& doc)
 	}
 	PHYSFS_writeBytes(handle, printer.CStr(), printer.CStrSize() - 1); // subtract one because CStrSize includes terminating null
 	PHYSFS_close(handle);
+#endif
 	return true;
 }
 
@@ -325,6 +345,7 @@ bool FILESYSTEM_loadTiXml2Document(const char *name, tinyxml2::XMLDocument& doc)
 std::vector<std::string> FILESYSTEM_getLevelDirFileNames()
 {
 	std::vector<std::string> list;
+#ifndef __PS2__
 	char **fileList = PHYSFS_enumerateFiles("/levels");
 	char **i;
 	std::string builtLocation;
@@ -341,7 +362,7 @@ std::vector<std::string> FILESYSTEM_getLevelDirFileNames()
 	}
 
 	PHYSFS_freeList(fileList);
-
+#endif
 	return list;
 }
 
@@ -353,6 +374,7 @@ static void PLATFORM_getOSDirectory(char* output)
 	SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, utf16_path);
 	WideCharToMultiByte(CP_UTF8, 0, utf16_path, -1, output, MAX_PATH, NULL, NULL);
 	SDL_strlcat(output, "\\VVVVVV\\", MAX_PATH);
+#elif defined(__PS2__)
 #else
 	SDL_strlcpy(output, PHYSFS_getPrefDir("distractionware", "VVVVVV"), MAX_PATH);
 #endif
@@ -471,6 +493,7 @@ static void PLATFORM_migrateSaveData(char* output)
 			PLATFORM_copyFile(oldLocation, newLocation);
 		}
 	} while (FindNextFile(hFind, &findHandle));
+#elif defined(__PS2__)
 #else
 #error See PLATFORM_migrateSaveData
 #endif
@@ -569,5 +592,9 @@ bool FILESYSTEM_openDirectory(const char *dname)
 
 bool FILESYSTEM_delete(const char *name)
 {
+#ifndef __PS2__
 	return PHYSFS_delete(name) != 0;
+#else
+	return true;
+#endif
 }

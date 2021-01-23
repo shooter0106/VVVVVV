@@ -11,6 +11,7 @@
 #include "UtilityClass.h"
 
 #include <limits.h>
+#include <cstdio>
 
 scriptclass::scriptclass()
 {

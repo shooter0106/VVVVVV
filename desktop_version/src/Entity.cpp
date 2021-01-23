@@ -10,6 +10,7 @@
 #include "Music.h"
 #include "Script.h"
 #include "UtilityClass.h"
+#include <stdio.h>
 
 bool entityclass::checktowerspikes(int t)
 {

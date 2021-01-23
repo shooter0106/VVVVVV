@@ -505,8 +505,10 @@ static void inline fixedloop()
 
     if(!key.isActive)
     {
+#if !defined(__PS2__)
         Mix_Pause(-1);
         Mix_PauseMusic();
+#endif
 
         if (!game.blackout)
         {
@@ -523,8 +525,10 @@ static void inline fixedloop()
     }
     else
     {
+#if !defined(__PS2__)
         Mix_Resume(-1);
         Mix_ResumeMusic();
+#endif
         game.gametimer++;
         graphics.cutscenebarstimer();
 
@@ -669,11 +673,14 @@ static void inline fixedloop()
 
     if (game.muted)
     {
+#if !defined(__PS2__)
         Mix_VolumeMusic(0) ;
         Mix_Volume(-1,0);
+#endif
     }
     else
     {
+#if !defined(__PS2__)
         Mix_Volume(-1,MIX_MAX_VOLUME);
 
         if (game.musicmuted)
@@ -684,6 +691,7 @@ static void inline fixedloop()
         {
             Mix_VolumeMusic(music.musicVolume);
         }
+#endif
     }
 
     if (key.resetWindow)

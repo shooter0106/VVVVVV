@@ -47,8 +47,8 @@ IF(APPLE)
 ENDIF()
 
 IF(PS2)
-	SET(CMAKE_C_COMPILER /usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-gcc)
-	SET(CMAKE_CXX_COMPILER /usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++)
+	SET(CMAKE_C_COMPILER mips64r5900el-ps2-elf-gcc)
+	SET(CMAKE_CXX_COMPILER mips64r5900el-ps2-elf-g++)
 
 	SET(CMAKE_SYSTEM_NAME Generic)
 
@@ -57,9 +57,8 @@ IF(PS2)
 
 	add_definitions(-D__PS2__)
 
-	INCLUDE_DIRECTORIES(/home/shooter/devel/current/ps2/SDL2/include)
+	INCLUDE_DIRECTORIES($ENV{PS2SDK}/ports/include/SDL2)
 	#ADD_COMPILE_OPTIONS(-O0)
-	#TARGET_LINK_LIBRARIES(VVVVVV /home/shooter/devel/current/ps2/SDL2/libsdl.a)
 ENDIF()
 
 PROJECT(VVVVVV)
@@ -258,7 +257,12 @@ IF(!PS2)
 ENDIF()
 
 IF(PS2)
-	TARGET_LINK_LIBRARIES(VVVVVV /home/shooter/devel/current/ps2/SDL2/libsdl.a)	
+	target_link_options(VVVVVV PRIVATE -L$ENV{PS2SDK}/ee/lib -L$ENV{PS2DEV}/gsKit/lib -L$ENV{PS2SDK}/ports/lib -lSDL2main -lSDL2 -lpatches -lgskit -ldmakit -lps2_drivers)
+	TARGET_LINK_LIBRARIES(VVVVVV $ENV{PS2SDK}/ports/lib/libSDL2.a)
+	TARGET_LINK_LIBRARIES(VVVVVV $ENV{PS2SDK}/ports/lib/libsdlmain.a)
+	TARGET_LINK_LIBRARIES(VVVVVV $ENV{PS2DEV}/gsKit/lib/libgskit.a)
+	TARGET_LINK_LIBRARIES(VVVVVV $ENV{PS2DEV}/gsKit/lib/libdmakit.a)
+	TARGET_LINK_LIBRARIES(VVVVVV $ENV{PS2SDK}/ports/lib/libps2_drivers.a)
 ENDIF()
 
 # SDL2 Dependency (Detection pulled from FAudio)

@@ -78,35 +78,6 @@ static void inline fixedloop();
 
 int main(int argc, char *argv[])
 {
-    printf("\t\t\n");
-    printf("\t\t\n");
-    printf("\t\t       VVVVVV\n");
-    printf("\t\t\n");
-    printf("\t\t\n");
-    printf("\t\t  8888888888888888  \n");
-    printf("\t\t88888888888888888888\n");
-    printf("\t\t888888    8888    88\n");
-    printf("\t\t888888    8888    88\n");
-    printf("\t\t88888888888888888888\n");
-    printf("\t\t88888888888888888888\n");
-    printf("\t\t888888            88\n");
-    printf("\t\t88888888        8888\n");
-    printf("\t\t  8888888888888888  \n");
-    printf("\t\t      88888888      \n");
-    printf("\t\t  8888888888888888  \n");
-    printf("\t\t88888888888888888888\n");
-    printf("\t\t88888888888888888888\n");
-    printf("\t\t88888888888888888888\n");
-    printf("\t\t8888  88888888  8888\n");
-    printf("\t\t8888  88888888  8888\n");
-    printf("\t\t    888888888888    \n");
-    printf("\t\t    8888    8888    \n");
-    printf("\t\t  888888    888888  \n");
-    printf("\t\t  888888    888888  \n");
-    printf("\t\t  888888    888888  \n");
-    printf("\t\t\n");
-    printf("\t\t\n");
-
     char* baseDir = NULL;
     char* assetsPath = NULL;
 

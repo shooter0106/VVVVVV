@@ -30,12 +30,46 @@
 #define MAX_PATH 255
 #endif
 
+#ifdef __PS2__
+#include "tamtypes.h"
+#include "sifrpc.h"
+#include "loadfile.h"
+#include "iopcontrol.h"
+#include "sbv_patches.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#endif
+
 static char saveDir[MAX_PATH] = {'\0'};
 static char levelDir[MAX_PATH] = {'\0'};
 
 static void PLATFORM_getOSDirectory(char* output);
 static void PLATFORM_migrateSaveData(char* output);
 static void PLATFORM_copyFile(const char *oldLocation, const char *newLocation);
+
+#ifdef __PS2__
+void loadModule(char *name, u8 *irx, int size) {
+    printf("[DEBUG] loading module %s\n", name);
+    if (size == 0) {
+        printf("[ERROR] module is empty\n");
+
+        return;
+    }
+
+    int id, res = 0;
+
+    id = SifExecModuleBuffer(irx, size, 0, NULL, &res);
+    if (id < 1) {
+        printf("[ERROR] module exec error:%d\n", id);
+
+        return;
+    }
+
+    printf("[DEBUG] module %s loaded with id:%d and res:%d\n", name, id, res);
+}
+#endif
 
 int FILESYSTEM_init(char *argvZero, char* baseDir, char *assetsPath)
 {
@@ -132,8 +166,31 @@ int FILESYSTEM_init(char *argvZero, char* baseDir, char *assetsPath)
 	{
 		printf("gamecontrollerdb.txt not found!\n");
 	}
-#endif
+#else
+	extern u8 usbd_irx[];
+	extern int size_usbd_irx;
+
+	extern u8 usbhdfsd_irx[];
+	extern int size_usbhdfsd_irx;
+
+	SifInitRpc(0);
+	while(!SifIopReset("", 0)){};
+	while(!SifIopSync()){};
+	SifInitRpc(0);
+
+	SifLoadFileInit();
+
+	sbv_patch_enable_lmb();
+	sbv_patch_disable_prefix_check();
+
+	// USB mass support
+    loadModule("usbd", usbd_irx, size_usbd_irx);
+    loadModule("usbhdfsd", usbhdfsd_irx, size_usbhdfsd_irx);
+
+	sleep(5);
+
 	return 1;
+#endif
 }
 
 void FILESYSTEM_deinit()
@@ -164,6 +221,7 @@ bool FILESYSTEM_directoryExists(const char *fname)
 
 void FILESYSTEM_mount(const char *fname)
 {
+	printf("[call] FILESYSTEM_mount(%s)", fname);
 #ifndef __PS2__
 	std::string path(PHYSFS_getRealDir(fname));
 	path += PHYSFS_getDirSeparator();
@@ -222,6 +280,8 @@ void FILESYSTEM_mountassets(const char* path)
 		printf("Custom asset directory does not exist\n");
 		FILESYSTEM_assetsmounted = false;
 	}
+#else
+	FILESYSTEM_assetsmounted = true;
 #endif
 }
 
@@ -302,6 +362,33 @@ void FILESYSTEM_loadFileToMemory(
 		FILESYSTEM_freeMemory(mem);
 	}
 	PHYSFS_close(handle);
+#else
+	std::string fullName = "mass:/data/" + std::string(name); 
+
+	int fd = open(fullName.c_str(), O_RDONLY);
+	printf("[ERROR]fd:%d\n", fd);
+	if (fd == -1) {
+		return;
+	}
+
+	int length = lseek(fd, 0, SEEK_END);
+	lseek(fd, 0, SEEK_SET);
+
+	*len = length;
+
+	if (addnull)
+	{
+		*mem = (unsigned char *) SDL_malloc(length + 1);
+		(*mem)[length] = 0;
+	}
+	else
+	{
+		*mem = (unsigned char *) SDL_malloc(length);
+	}
+
+	read(fd, *mem, length);
+
+	close(fd);
 #endif
 }
 

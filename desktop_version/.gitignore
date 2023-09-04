@@ -7,6 +7,9 @@ cmake_install.cmake
 Makefile
 VVVVVV.exe
 VVVVVV
+VVVVVV.elf
+*.o
+*.s
 *.a
 *.gch
 src/Version.h.out

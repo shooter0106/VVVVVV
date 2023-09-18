@@ -22,7 +22,11 @@ ScreenSettings::ScreenSettings()
 {
 	windowWidth = 320;
 	windowHeight = 240;
+#ifdef __PS2__
+	fullscreen = true;
+#else
 	fullscreen = false;
+#endif
 	useVsync = false;
 	stretch = 0;
 	linearFilter = false;

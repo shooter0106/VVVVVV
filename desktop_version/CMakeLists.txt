@@ -46,19 +46,6 @@ IF(APPLE)
 	ADD_COMPILE_OPTIONS(-Werror=partial-availability)
 ENDIF()
 
-IF(PS2)
-	SET(CMAKE_C_COMPILER mips64r5900el-ps2-elf-gcc)
-	SET(CMAKE_CXX_COMPILER mips64r5900el-ps2-elf-g++)
-
-	SET(CMAKE_SYSTEM_NAME Generic)
-
-	set(CMAKE_C_COMPILER_WORKS 1)
-	set(CMAKE_CXX_COMPILER_WORKS 1)
-
-	add_definitions(-D__PS2__)
-	add_definitions(-D_EE)
-ENDIF()
-
 PROJECT(VVVVVV)
 
 IF(APPLE)
@@ -257,19 +244,7 @@ ADD_LIBRARY(lodepng-static STATIC ${PNG_SRC})
 TARGET_COMPILE_DEFINITIONS(lodepng-static PRIVATE -DLODEPNG_NO_COMPILE_ALLOCATORS)
 
 # Static Dependencies
-IF(PS2)
-	TARGET_LINK_LIBRARIES(VVVVVV tinyxml2-static lodepng-static)
-ELSE()
-	TARGET_LINK_LIBRARIES(VVVVVV physfs-static tinyxml2-static lodepng-static)
-ENDIF()
-
-IF(PS2)
-	target_link_options(VVVVVV PRIVATE -L$ENV{PS2SDK}/ee/lib -L$ENV{PS2DEV}/gsKit/lib -L$ENV{PS2SDK}/ports/lib -lSDL2main -lSDL2 -lpatches -lgskit -ldmakit -lps2_drivers)
-	TARGET_LINK_LIBRARIES(VVVVVV $ENV{PS2SDK}/ports/lib/libSDL2.a)
-	TARGET_LINK_LIBRARIES(VVVVVV $ENV{PS2SDK}/ports/lib/libps2_drivers.a)
-	set(SDL2_LIBRARIES $ENV{PS2SDK}/ports/lib/libSDL2.a)
-	set(SDL2_INCLUDE_DIRS $ENV{PS2SDK}/ports/include/SDL2)
-ENDIF()
+TARGET_LINK_LIBRARIES(VVVVVV physfs-static tinyxml2-static lodepng-static)
 
 # SDL2 Dependency (Detection pulled from FAudio)
 if (DEFINED SDL2_INCLUDE_DIRS AND DEFINED SDL2_LIBRARIES)

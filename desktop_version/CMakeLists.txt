@@ -82,14 +82,6 @@ INCLUDE_DIRECTORIES(
 	../third_party/utfcpp/source
 )
 
-IF(PS2)
-	INCLUDE_DIRECTORIES(
-		src
-		$ENV{PS2SDK}/ee/include
-		$ENV{PS2SDK}/common/include
-	)
-ENDIF()
-
 # Source Lists
 SET(VVV_SRC
 	src/BinaryBlob.cpp

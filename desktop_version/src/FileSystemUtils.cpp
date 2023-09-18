@@ -187,6 +187,32 @@ int FILESYSTEM_init(char *argvZero, char* baseDir, char *assetsPath)
     loadModule("usbd", usbd_irx, size_usbd_irx);
     loadModule("usbhdfsd", usbhdfsd_irx, size_usbhdfsd_irx);
 
+	int ret = 0;
+
+	ret = SifLoadModule("rom0:XSIO2MAN", 0, NULL);
+  	if (ret < 0) {
+      //exit(-1);
+	  return 0;
+  	}
+
+  	ret = SifLoadModule("rom0:XPADMAN", 0, NULL);
+  	if (ret < 0) {
+      //exit(-1);
+	  return 0;
+  	}
+
+  	ret = SifLoadModule("rom0:XMCMAN", 0, NULL);
+  	if (ret < 0) {
+      //exit(-1);
+	  return 0;
+  	}
+  	
+	ret = SifLoadModule("rom0:XMCSERV", 0, NULL);
+  	if (ret < 0) {
+      printf("Failed to load module: XMCSERV");
+	  return 0;
+  	}
+
 	sleep(5);
 
 	return 1;

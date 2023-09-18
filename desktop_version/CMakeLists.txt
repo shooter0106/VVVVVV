@@ -56,6 +56,7 @@ IF(PS2)
 	set(CMAKE_CXX_COMPILER_WORKS 1)
 
 	add_definitions(-D__PS2__)
+	add_definitions(-D_EE)
 ENDIF()
 
 PROJECT(VVVVVV)
@@ -93,6 +94,14 @@ INCLUDE_DIRECTORIES(
 	../third_party/lodepng
 	../third_party/utfcpp/source
 )
+
+IF(PS2)
+	INCLUDE_DIRECTORIES(
+		src
+		$ENV{PS2SDK}/ee/include
+		$ENV{PS2SDK}/common/include
+	)
+ENDIF()
 
 # Source Lists
 SET(VVV_SRC
@@ -248,9 +257,10 @@ ADD_LIBRARY(lodepng-static STATIC ${PNG_SRC})
 TARGET_COMPILE_DEFINITIONS(lodepng-static PRIVATE -DLODEPNG_NO_COMPILE_ALLOCATORS)
 
 # Static Dependencies
-TARGET_LINK_LIBRARIES(VVVVVV tinyxml2-static lodepng-static)
-IF(!PS2)
-	TARGET_LINK_LIBRARIES(VVVVVV physfs-static)
+IF(PS2)
+	TARGET_LINK_LIBRARIES(VVVVVV tinyxml2-static lodepng-static)
+ELSE()
+	TARGET_LINK_LIBRARIES(VVVVVV physfs-static tinyxml2-static lodepng-static)
 ENDIF()
 
 IF(PS2)

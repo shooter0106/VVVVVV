@@ -40,6 +40,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <libmc.h>
 #endif
 
 static char saveDir[MAX_PATH] = {'\0'};
@@ -51,7 +52,6 @@ static void PLATFORM_copyFile(const char *oldLocation, const char *newLocation);
 
 #ifdef __PS2__
 void loadModule(char *name, u8 *irx, int size) {
-    printf("[DEBUG] loading module %s\n", name);
     if (size == 0) {
         printf("[ERROR] module is empty\n");
 
@@ -66,8 +66,6 @@ void loadModule(char *name, u8 *irx, int size) {
 
         return;
     }
-
-    printf("[DEBUG] module %s loaded with id:%d and res:%d\n", name, id, res);
 }
 #endif
 
@@ -212,6 +210,11 @@ int FILESYSTEM_init(char *argvZero, char* baseDir, char *assetsPath)
       printf("Failed to load module: XMCSERV");
 	  return 0;
   	}
+
+	if(mcInit(MC_TYPE_XMC) < 0) {
+		printf("Failed to initialise memcard server!\n");
+		return 0;
+	}
 
 	sleep(5);
 
@@ -392,7 +395,6 @@ void FILESYSTEM_loadFileToMemory(
 	std::string fullName = "mass:/data/" + std::string(name); 
 
 	int fd = open(fullName.c_str(), O_RDONLY);
-	printf("[ERROR]fd:%d\n", fd);
 	if (fd == -1) {
 		return;
 	}
@@ -426,10 +428,28 @@ void FILESYSTEM_freeMemory(unsigned char **mem)
 
 bool FILESYSTEM_saveTiXml2Document(const char *name, tinyxml2::XMLDocument& doc)
 {
-#ifndef __PS2__
 	/* XMLDocument.SaveFile doesn't account for Unicode paths, PHYSFS does */
 	tinyxml2::XMLPrinter printer;
 	doc.Print(&printer);
+#ifdef __PS2__
+	if (std::string(name).rfind("saves/", 0) != 0) {
+		return true;
+	}
+
+	mkdir("mc0:VVVVVV", 0775);
+
+	std::string newName = std::string(name).replace(0, 6, "mc0:VVVVVV/");
+
+	int handle = open(newName.c_str(), O_CREAT);
+
+	if (handle == -1) {
+		return false;
+	}
+
+	write(handle, printer.CStr(), printer.CStrSize());
+
+	close(handle);
+#else
 	PHYSFS_File* handle = PHYSFS_openWrite(name);
 	if (handle == NULL)
 	{
@@ -444,6 +464,33 @@ bool FILESYSTEM_saveTiXml2Document(const char *name, tinyxml2::XMLDocument& doc)
 bool FILESYSTEM_loadTiXml2Document(const char *name, tinyxml2::XMLDocument& doc)
 {
 	/* XMLDocument.LoadFile doesn't account for Unicode paths, PHYSFS does */
+#ifdef __PS2__
+	if (std::string(name).rfind("saves/", 0) != 0) {
+		return true;
+	}
+
+	std::string newName = std::string(name).replace(0, 6, "mc0:VVVVVV/");
+
+	int handle = open(newName.c_str(), O_RDONLY);
+
+	if (handle == -1) {
+		return false;
+	}
+
+	int length = lseek(handle, 0, SEEK_END);
+	lseek(handle, 0, SEEK_SET);
+
+	void *mem = SDL_malloc(length);
+
+	int readed = read(handle, mem, length);
+
+	tinyxml2::XMLError error = doc.Parse((const char*) mem);
+
+	SDL_free(mem);
+	close(handle);
+
+	return true;
+#else
 	unsigned char *mem = NULL;
 	FILESYSTEM_loadFileToMemory(name, &mem, NULL, true);
 	if (mem == NULL)
@@ -452,7 +499,9 @@ bool FILESYSTEM_loadTiXml2Document(const char *name, tinyxml2::XMLDocument& doc)
 	}
 	doc.Parse((const char*) mem);
 	FILESYSTEM_freeMemory(&mem);
+
 	return true;
+#endif
 }
 
 std::vector<std::string> FILESYSTEM_getLevelDirFileNames()

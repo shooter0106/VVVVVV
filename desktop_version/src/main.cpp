@@ -22,6 +22,10 @@
 #include "SoundSystem.h"
 #include "UtilityClass.h"
 
+#ifdef __PS2__
+#include "PS2.h"
+#endif
+
 scriptclass script;
 
 #if !defined(NO_CUSTOM_LEVELS)
@@ -159,6 +163,10 @@ int main(int argc, char *argv[])
         }
     }
 
+#ifdef __PS2__
+    PS2_Init();
+#endif
+    
     if(!FILESYSTEM_init(argv[0], baseDir, assetsPath))
     {
         puts("Unable to initialize filesystem!");

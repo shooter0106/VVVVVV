@@ -2,7 +2,7 @@ BIN2S = $(PS2SDK)/bin/bin2s
 
 EE_BIN = VVVVVV.elf
 
-SRC = BinaryBlob.o BlockV.o Ent.o Entity.o FileSystemUtils.o Finalclass.o Game.o Graphics.o GraphicsResources.o GraphicsUtil.o Input.o KeyPoll.o Labclass.o Logic.o Map.o Music.o Otherlevel.o preloader.o Render.o RenderFixed.o Screen.o Script.o Scripts.o SoundSystem.o Spacestation2.o TerminalScripts.o Textbox.o Tower.o UtilityClass.o WarpClass.o XMLUtils.o main.o Network.o ThirdPartyDeps.o
+SRC = BinaryBlob.o BlockV.o Ent.o Entity.o FileSystemUtils.o Finalclass.o Game.o Graphics.o GraphicsResources.o GraphicsUtil.o Input.o KeyPoll.o Labclass.o Logic.o Map.o Music.o Otherlevel.o preloader.o Render.o RenderFixed.o Screen.o Script.o Scripts.o SoundSystem.o Spacestation2.o TerminalScripts.o Textbox.o Tower.o UtilityClass.o WarpClass.o XMLUtils.o main.o Network.o ThirdPartyDeps.o PS2.o
 LIB = ../../third_party/tinyxml2/tinyxml2.o ../../third_party/lodepng/lodepng.o
 EE_OBJS = $(SRC) $(LIB) usbd_irx.o usbhdfsd_irx.o
 
@@ -12,7 +12,7 @@ EE_INCS = -I ${PS2SDK}/ports/include/SDL2 $(THIRD_INCS)
 
 EE_CXXFLAGS = -D__PS2__ -DNO_EDITOR -DNO_CUSTOM_LEVELS
 
-EE_LDFLAGS = -L${PS2SDK}/ee/lib -L${PS2DEV}/gsKit/lib -L${PS2SDK}/ports/lib -lSDL2main -lSDL2 -lpatches -lgskit -ldmakit -lps2_drivers -lmc
+EE_LDFLAGS = -L${PS2SDK}/ee/lib -L${PS2DEV}/gsKit/lib -L${PS2SDK}/ports/lib -lSDL2main -lSDL2 -lSDL2_mixer -lmodplug -lpatches -lgskit -ldmakit -lps2_drivers -lmc
 
 all: $(EE_BIN)
 

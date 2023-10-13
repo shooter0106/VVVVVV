@@ -10,7 +10,7 @@ THIRD_INCS = -I../../third_party/tinyxml2 -I../../third_party/physfs -I../../thi
 
 EE_INCS = -I ${PS2SDK}/ports/include/SDL2 $(THIRD_INCS)
 
-EE_CXXFLAGS = -D__PS2__ -DNO_EDITOR -DNO_CUSTOM_LEVELS
+EE_CXXFLAGS = -D__PS2__ -DNO_EDITOR -DNO_CUSTOM_LEVELS -O0 -G3
 
 EE_LDFLAGS = -L${PS2SDK}/ee/lib -L${PS2DEV}/gsKit/lib -L${PS2SDK}/ports/lib -lSDL2main -lSDL2 -lSDL2_mixer -lmodplug -lpatches -lgskit -ldmakit -lps2_drivers -lmc
 
@@ -21,6 +21,9 @@ usbd_irx.s: $(PS2SDK)/iop/irx/usbd.irx
 
 usbhdfsd_irx.s: $(PS2SDK)/iop/irx/usbhdfsd.irx
 	$(BIN2S) $< $@ usbhdfsd_irx
+
+sim:
+	PCSX2 --elf=$(PWD)/$(EE_BIN) --nogui
 
 clean:
 	rm -f *.elf *.o *.s *.a

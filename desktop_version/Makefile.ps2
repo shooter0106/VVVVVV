@@ -1,0 +1,24 @@
+EE_BIN = VVVVVV.ELF
+
+SRC = src/BinaryBlob.o src/BlockV.o src/Ent.o src/Entity.o src/FileSystemUtils.o src/Finalclass.o src/Game.o src/Graphics.o src/GraphicsResources.o src/GraphicsUtil.o src/Input.o src/KeyPoll.o src/Labclass.o src/Logic.o src/Map.o src/Music.o src/Otherlevel.o src/preloader.o src/Render.o src/RenderFixed.o src/Screen.o src/Script.o src/Scripts.o src/SoundSystem.o src/Spacestation2.o src/TerminalScripts.o src/Textbox.o src/Tower.o src/UtilityClass.o src/WarpClass.o src/XMLUtils.o src/main.o src/Network.o src/ThirdPartyDeps.o
+LIB = ../third_party/tinyxml2/tinyxml2.o ../third_party/lodepng/lodepng.o
+EE_OBJS = $(SRC) $(LIB)
+
+THIRD_INCS = -I../third_party/tinyxml2 -I../third_party/physfs -I../third_party/lodepng -I../third_party/utfcpp/source
+
+EE_INCS = -I ${PS2SDK}/ports/include/SDL2 -I${PS2SDK}/ports/include $(THIRD_INCS)
+
+EE_OPTFLAGS = -O2
+EE_CXXFLAGS = -D__PS2__ -DNO_EDITOR -DNO_CUSTOM_LEVELS
+EE_LDFLAGS = -L${PS2SDK}/ee/lib -L${PS2DEV}/gsKit/lib -L${PS2SDK}/ports/lib -lSDL2main -lSDL2 -lSDL2_mixer -lmodplug -lpatches -lgskit -ldmakit -lps2_drivers -lmc
+
+all: $(EE_BIN)
+
+sim:
+	PCSX2 --elf=$(PWD)/$(EE_BIN) --nogui
+
+clean:
+	rm -f *.ELF *.o *.s *.a
+
+include $(PS2SDK)/samples/Makefile.pref
+include $(PS2SDK)/samples/Makefile.eeglobal_cpp

@@ -1,26 +1,21 @@
-BIN2S = $(PS2SDK)/bin/bin2s
-
 EE_BIN = VVVVVV.elf
 
-SRC = BinaryBlob.o BlockV.o Ent.o Entity.o FileSystemUtils.o Finalclass.o Game.o Graphics.o GraphicsResources.o GraphicsUtil.o Input.o KeyPoll.o Labclass.o Logic.o Map.o Music.o Otherlevel.o preloader.o Render.o RenderFixed.o Screen.o Script.o Scripts.o SoundSystem.o Spacestation2.o TerminalScripts.o Textbox.o Tower.o UtilityClass.o WarpClass.o XMLUtils.o main.o Network.o ThirdPartyDeps.o PS2.o
+SRC = BinaryBlob.o BlockV.o Ent.o Entity.o FileSystemUtils.o Finalclass.o Game.o Graphics.o GraphicsResources.o GraphicsUtil.o Input.o KeyPoll.o Labclass.o Logic.o Map.o Music.o Otherlevel.o preloader.o Render.o RenderFixed.o Screen.o Script.o Scripts.o SoundSystem.o Spacestation2.o TerminalScripts.o Textbox.o Tower.o UtilityClass.o WarpClass.o XMLUtils.o main.o Network.o ThirdPartyDeps.o
 LIB = ../../third_party/tinyxml2/tinyxml2.o ../../third_party/lodepng/lodepng.o
-EE_OBJS = $(SRC) $(LIB) usbd_irx.o usbhdfsd_irx.o
+EE_OBJS = $(SRC) $(LIB)
 
 THIRD_INCS = -I../../third_party/tinyxml2 -I../../third_party/physfs -I../../third_party/lodepng -I../../third_party/utfcpp/source
 
-EE_INCS = -I ${PS2SDK}/ports/include/SDL2 $(THIRD_INCS)
+EE_INCS = -I ${PS2SDK}/ports/include/SDL2 -I${PS2SDK}/ports/include $(THIRD_INCS)
 
-EE_CXXFLAGS = -D__PS2__ -DNO_EDITOR -DNO_CUSTOM_LEVELS -O0 -G3
+# Optimization compiler flags
+EE_OPTFLAGS = -O2
+
+EE_CXXFLAGS = -D__PS2__ -DNO_EDITOR -DNO_CUSTOM_LEVELS
 
 EE_LDFLAGS = -L${PS2SDK}/ee/lib -L${PS2DEV}/gsKit/lib -L${PS2SDK}/ports/lib -lSDL2main -lSDL2 -lSDL2_mixer -lmodplug -lpatches -lgskit -ldmakit -lps2_drivers -lmc
 
 all: $(EE_BIN)
-
-usbd_irx.s: $(PS2SDK)/iop/irx/usbd.irx
-	$(BIN2S) $< $@ usbd_irx
-
-usbhdfsd_irx.s: $(PS2SDK)/iop/irx/usbhdfsd.irx
-	$(BIN2S) $< $@ usbhdfsd_irx
 
 sim:
 	PCSX2 --elf=$(PWD)/$(EE_BIN) --nogui

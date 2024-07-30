@@ -54,6 +54,7 @@ SoundTrack::SoundTrack(const char* fileName)
 
 SoundSystem::SoundSystem()
 {
+#if !defined(__PS2__)
 	int audio_rate = 44100;
 	Uint16 audio_format = AUDIO_S16SYS;
 	int audio_channels = 2;
@@ -64,4 +65,5 @@ SoundSystem::SoundSystem()
 		fprintf(stderr, "Unable to initialize audio: %s\n", Mix_GetError());
 		SDL_assert(0 && "Unable to initialize audio!");
 	}
+#endif
 }

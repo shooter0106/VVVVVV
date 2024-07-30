@@ -7,7 +7,7 @@ cmake_install.cmake
 Makefile
 VVVVVV.exe
 VVVVVV
-VVVVVV.elf
+VVVVVV.ELF
 *.o
 *.s
 *.a

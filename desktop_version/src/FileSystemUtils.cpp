@@ -314,7 +314,8 @@ void FILESYSTEM_loadFileToMemory(
 	}
 	PHYSFS_close(handle);
 #else
-	std::string fullName = "mass:/data/" + std::string(name); 
+	// TODO mass vs cdfs
+	std::string fullName = "cdfs:/data/" + std::string(name); 
 
 	int fd = open(fullName.c_str(), O_RDONLY);
 	if (fd == -1) {

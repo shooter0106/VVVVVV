@@ -1,4 +1,4 @@
-EE_BIN = VVVVVV.elf
+EE_BIN = VVVVVV.ELF
 
 SRC = BinaryBlob.o BlockV.o Ent.o Entity.o FileSystemUtils.o Finalclass.o Game.o Graphics.o GraphicsResources.o GraphicsUtil.o Input.o KeyPoll.o Labclass.o Logic.o Map.o Music.o Otherlevel.o preloader.o Render.o RenderFixed.o Screen.o Script.o Scripts.o SoundSystem.o Spacestation2.o TerminalScripts.o Textbox.o Tower.o UtilityClass.o WarpClass.o XMLUtils.o main.o Network.o ThirdPartyDeps.o
 LIB = ../../third_party/tinyxml2/tinyxml2.o ../../third_party/lodepng/lodepng.o

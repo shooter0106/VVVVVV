@@ -18,7 +18,7 @@ sim:
 	PCSX2 --elf=$(PWD)/$(EE_BIN) --nogui
 
 clean:
-	rm -f *.ELF *.o *.s *.a
+	rm -f *.ELF src/*.o src/*.s src/*.a ../third_party/lodepng/*.o ../third_party/tinyxml2/*.o
 
 include $(PS2SDK)/samples/Makefile.pref
 include $(PS2SDK)/samples/Makefile.eeglobal_cpp

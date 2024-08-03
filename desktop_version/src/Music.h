@@ -54,13 +54,8 @@ public:
 	int num_pppppp_tracks;
 	int num_mmmmmm_tracks;
 
-#if defined(__PS2__)
-	unsigned long songStart;
-	unsigned long songEnd;
-#else
 	Uint64 songStart;
 	Uint64 songEnd;
-#endif
 };
 
 #ifndef MUSIC_DEFINITION

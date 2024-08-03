@@ -8,10 +8,6 @@
 #include "Map.h"
 #include "UtilityClass.h"
 
-#if defined(__PS2__)
-#define MIX_MAX_VOLUME 0
-#endif
-
 static void songend();
 
 musicclass::musicclass()
@@ -30,16 +26,13 @@ musicclass::musicclass()
 	songStart = 0;
 	songEnd = 0;
 
-#if !defined(__PS2__)
 	Mix_HookMusicFinished(&songend);
-#endif
 
 	usingmmmmmm = false;
 }
 
 void musicclass::init()
 {
-#if !defined(__PS2__)
 	for (size_t i = 0; i < soundTracks.size(); ++i)
 	{
 		Mix_FreeChunk(soundTracks[i].sound);
@@ -163,21 +156,17 @@ void musicclass::init()
 
 		num_pppppp_tracks++;
 	}
-#endif
 }
 
 static void songend()
 {
-#if !defined(__PS2__)
 	extern musicclass music;
 	music.songEnd = SDL_GetPerformanceCounter();
 	music.currentsong = -1;
-#endif
 }
 
 void musicclass::play(int t, const double position_sec /*= 0.0*/, const int fadein_ms /*= 3000*/)
 {
-#if !defined(__PS2__)
 	if (mmmmmm && usingmmmmmm)
 	{
 		// Don't conjoin this if-statement with the above one...
@@ -251,19 +240,16 @@ void musicclass::play(int t, const double position_sec /*= 0.0*/, const int fade
 	}
 
 	songStart = SDL_GetPerformanceCounter();
-#endif
 }
 
 void musicclass::resume(const int fadein_ms /*= 0*/)
 {
-#if !defined(__PS2__)
 	const double offset = static_cast<double>(songEnd - songStart);
 	const double frequency = static_cast<double>(SDL_GetPerformanceFrequency());
 
 	const double position_sec = offset / frequency;
 
 	play(resumesong, position_sec, fadein_ms);
-#endif
 }
 
 void musicclass::fadein()
@@ -273,10 +259,8 @@ void musicclass::fadein()
 
 void musicclass::haltdasmusik()
 {
-#if !defined(__PS2__)
 	Mix_HaltMusic();
 	resumesong = currentsong;
-#endif
 }
 
 void musicclass::silencedasmusik()
@@ -292,11 +276,9 @@ void musicclass::fadeMusicVolumeIn(int ms)
 
 void musicclass::fadeout(const bool quick_fade_ /*= true*/)
 {
-#if !defined(__PS2__)
 	Mix_FadeOutMusic(2000);
 	resumesong = currentsong;
 	quick_fade = quick_fade_;
-#endif
 }
 
 void musicclass::processmusicfadein()
@@ -310,7 +292,6 @@ void musicclass::processmusicfadein()
 
 void musicclass::processmusic()
 {
-#if !defined(__PS2__)
 	if(!safeToProcessMusic)
 	{
 		return;
@@ -327,7 +308,6 @@ void musicclass::processmusic()
 	{
 		processmusicfadein();
 	}
-#endif
 }
 
 
@@ -383,7 +363,6 @@ void musicclass::changemusicarea(int x, int y)
 
 void musicclass::playef(int t)
 {
-#if !defined(__PS2__)
 	if (!INBOUNDS_VEC(t, soundTracks))
 	{
 		return;
@@ -395,5 +374,4 @@ void musicclass::playef(int t)
 	{
 		fprintf(stderr, "Unable to play WAV file: %s\n", Mix_GetError());
 	}
-#endif
 }

@@ -273,13 +273,11 @@ void KeyPoll::Poll()
 					}
 				}
 				SDL_DisableScreenSaver();
-				#if !defined(__PS2__)
 				if (!game.disablepause && Mix_PlayingMusic())
 				{
 					// Correct songStart for how long we were paused
 					music.songStart += SDL_GetPerformanceCounter() - pauseStart;
 				}
-				#endif
 				break;
 			case SDL_WINDOWEVENT_FOCUS_LOST:
 				if (!game.disablepause)
